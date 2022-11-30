@@ -1,4 +1,5 @@
 import express from "express";
+import UserModel from "../model/user.model.js";
 
 const userRoute = express.Router();
 
@@ -14,15 +15,37 @@ const bancoDados = [
   },
 ];
 
-//CRIAÇÃO DAS ROTAS
-userRoute.get("/enap", (req, res) => {
-  // req -> request -> REQUISIÇÃO QUE VEM DO CLIENTE
-  // res -> response -> RESPOSTA PARA O CLIENTE
+//CREATE - MONGODB
+userRoute.post("/create-user", async (req, res) => {
+  try {
+    const form = req.body;
 
-  const bemVindo = "Bem vindo ao servidor da ENAP turma 92 - Ironhack";
+    //quer criar um documento dentro da sua collection -> .create()
+    const newUser = await UserModel.create(form);
 
-  //retorna uma resposta com status de 200 e um json .....
-  return res.status(200).json({ msg: bemVindo, turma: "92 web dev" });
+    return res.status(201).json(newUser);
+  } catch (error) {
+    console.log(error.errors);
+    return res.status(500).json(error.errors);
+  }
+});
+
+userRoute.get("/all-users", async (req, res) => {
+  try {
+
+    // find vazio -> todas as ocorrencias
+    // projections -> defini os campos que vão ser retornados
+    // sort() -> ordenada o retorno dos dados
+    // limit() -> define quantas ocorrencias serão retornadas
+    const users = await UserModel.find({}, { __v: 0, updatedAt: 0 }).sort({
+      age: 1,
+    }).limit(100);
+
+    return res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
 });
 
 //ATIVIDADE: CRIAR UMA ROTA QUE RETORNA O BANCO DE DADOS -> ROTA -> "/all-users" verbo: GET
@@ -30,7 +53,7 @@ userRoute.get("/all-users", (req, res) => {
   return res.status(200).json(bancoDados);
 });
 
-//POST - create
+/* //POST - create
 userRoute.post("/new-user", (req, res) => {
   //console.log(req.body) // => é o CORPO da minha requisição (json)
   //console.log(req.body.name) => apenas o nome
@@ -40,7 +63,7 @@ userRoute.post("/new-user", (req, res) => {
   bancoDados.push(form);
 
   return res.status(201).json(bancoDados);
-});
+}); */
 
 //DELETE - delete a user
 userRoute.delete("/delete/:id", (req, res) => {
