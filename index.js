@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 
 //conectando com o banco de dados
-connect()
+connect();
 
 app.use("/user", userRoute);
 

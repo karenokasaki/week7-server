@@ -25,7 +25,7 @@ userRoute.post("/create-user", async (req, res) => {
 
     return res.status(201).json(newUser);
   } catch (error) {
-    console.log(error.errors);
+    console.log(error);
     return res.status(500).json(error.errors);
   }
 });
@@ -55,6 +55,7 @@ userRoute.get("/oneUser/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
+    // const user = await UserModel.find({_id: id})
     const user = await UserModel.findById(id);
 
     if (!user) {
@@ -103,8 +104,6 @@ userRoute.put("/edit/:id", async (req, res) => {
     return res.status(500).json(error.errors);
   }
 });
-
-
 
 export default userRoute;
 
