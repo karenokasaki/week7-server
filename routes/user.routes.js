@@ -1,4 +1,5 @@
 import express from "express";
+import TaskModel from "../model/task.model.js";
 import UserModel from "../model/user.model.js";
 
 const userRoute = express.Router();
@@ -68,6 +69,10 @@ userRoute.delete("/delete/:id", async (req, res) => {
     }
 
     const users = await UserModel.find();
+
+   //deletar TODAS as tarefas que o usuário é dono
+   await TaskModel.deleteMany({ user: id })
+
 
     return res.status(200).json(users);
   } catch (error) {
