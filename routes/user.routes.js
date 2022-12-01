@@ -3,18 +3,6 @@ import UserModel from "../model/user.model.js";
 
 const userRoute = express.Router();
 
-//banco de dados
-const bancoDados = [
-  {
-    id: "764b5e8f-d6f7-4161-ac20-fa0085413844",
-    name: "Karen Okasaki",
-    age: 29,
-    role: "professora",
-    active: true,
-    tasks: ["preparar aula do mongoCompass", "Crud no mongoDB"],
-  },
-];
-
 //CREATE - MONGODB
 userRoute.post("/create-user", async (req, res) => {
   try {
@@ -56,7 +44,7 @@ userRoute.get("/oneUser/:id", async (req, res) => {
     const { id } = req.params;
 
     // const user = await UserModel.find({_id: id})
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("tasks");
 
     if (!user) {
       return res.status(400).json({ msg: " Usuário não encontrado!" });

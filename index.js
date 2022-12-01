@@ -3,6 +3,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import connect from "./config/db.config.js";
 import userRoute from "./routes/user.routes.js";
+import taskRoute from "./routes/task.routes.js";
 
 //habilitar o servidor a ter variáveis de ambiente
 dotenv.config();
@@ -17,6 +18,8 @@ app.use(express.json());
 connect();
 
 app.use("/user", userRoute);
+
+app.use("/task", taskRoute);
 
 // o servidor subindo pro ar.
 app.listen(process.env.PORT, () => {
