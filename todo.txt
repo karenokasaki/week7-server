@@ -1,9 +1,0 @@
-
-// task
-
-- title: string
-- details: string
-- user: referencia do id do user 
-- complete: boolean
-- dateFin: date
-

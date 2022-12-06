@@ -22,17 +22,13 @@ userRoute.post("/create-user", async (req, res) => {
 //GET ALL USERS
 userRoute.get("/all-users", async (req, res) => {
   try {
-    // find vazio -> todas as ocorrencias
-    // projections -> defini os campos que vão ser retornados
-    // sort() -> ordenada o retorno dos dados
-    // limit() -> define quantas ocorrencias serão retornadas
     const users = await UserModel.find({}, { __v: 0, updatedAt: 0 })
       .sort({
         age: 1,
       })
       .limit(100);
 
-    return res.status(200).json(users);
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     return res.status(500).json(error.errors);
@@ -70,9 +66,8 @@ userRoute.delete("/delete/:id", async (req, res) => {
 
     const users = await UserModel.find();
 
-   //deletar TODAS as tarefas que o usuário é dono
-   await TaskModel.deleteMany({ user: id })
-
+    //deletar TODAS as tarefas que o usuário é dono
+    await TaskModel.deleteMany({ user: id });
 
     return res.status(200).json(users);
   } catch (error) {
@@ -99,54 +94,3 @@ userRoute.put("/edit/:id", async (req, res) => {
 });
 
 export default userRoute;
-
-//ATIVIDADE: CRIAR UMA ROTA QUE RETORNA O BANCO DE DADOS -> ROTA -> "/all-users" verbo: GET
-/* userRoute.get("/all-users", (req, res) => {
-  return res.status(200).json(bancoDados);
-}); */
-
-/* //POST - create
-userRoute.post("/new-user", (req, res) => {
-  //console.log(req.body) // => é o CORPO da minha requisição (json)
-  //console.log(req.body.name) => apenas o nome
-
-  const form = req.body;
-
-  bancoDados.push(form);
-
-  return res.status(201).json(bancoDados);
-}); */
-//DELETE - delete a user
-/* userRoute.delete("/delete/:id", (req, res) => {
-  console.log(req.params.id); // req.params -> {} por isso ele pode ser DESCONTRUÍDO
-  const { id } = req.params; // eu estou DESCONTRUINDO o req.params e ABRINDO o obj e acessando pelo NOME da chave
-
-  const deleteById = bancoDados.find((user) => user.id === id);
-
-  if (!deleteById) {
-    return res.status(400).json({ msg: "Usuário não encontrado" });
-  }
-
-  console.log(deleteById);
-  const index = bancoDados.indexOf(deleteById);
-  console.log(index);
-
-  bancoDados.splice(index, 1);
-
-  return res.status(200).json(bancoDados);
-}); */
-
-//PUT - editar
-/* userRoute.put("/edit/:id", (req, res) => {
-  const { id } = req.params;
-
-  const editUser = bancoDados.find((user) => user.id === id);
-  const index = bancoDados.indexOf(editUser); // 0
-
-  bancoDados[index] = {
-    ...editUser,
-    ...req.body,
-  };
-
-  return res.status(200).json(bancoDados[index]);
-}); */
