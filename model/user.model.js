@@ -32,7 +32,7 @@ const userSchema = new Schema(
       default: true,
     },
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
-    passwordHash: {type: String, required: true}
+    passwordHash: { type: String, required: true },
   },
   {
     timestamps: true,
