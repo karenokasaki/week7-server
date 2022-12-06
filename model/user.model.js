@@ -24,14 +24,15 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["professora", "aluno", "ta"],
-      default: "aluno",
+      enum: ["ADMIN", "USER"],
+      default: "USER",
     },
     active: {
       type: Boolean,
       default: true,
     },
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    passwordHash: {type: String, required: true}
   },
   {
     timestamps: true,

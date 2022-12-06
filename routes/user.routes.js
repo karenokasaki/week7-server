@@ -1,8 +1,51 @@
 import express from "express";
 import TaskModel from "../model/task.model.js";
 import UserModel from "../model/user.model.js";
+import bcrypt from "bcrypt";
 
 const userRoute = express.Router();
+
+const saltRounds = 10;
+
+//sign-up
+userRoute.post("/sign-up", async (req, res) => {
+  try {
+    //capturand a senha do meu req.body
+    const { password } = req.body;
+
+    //checando se a senha EXISTE || se a senha passou nos pré requisitos
+    if (
+      !password ||
+      !password.match(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#!])[0-9a-zA-Z$*&@#!]{8,}$/
+      )
+    ) {
+      return res
+        .status(400)
+        .json({ msg: "Senha não tem os requisitos mínimos de segurança" });
+    }
+
+    //gerar o salt
+    const salt = await bcrypt.genSalt(saltRounds); //10
+
+    //hashear senha
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    //criar o usuário com a senha hasheada
+    const newUser = await UserModel.create({
+      ...req.body,
+      passwordHash: hashedPassword,
+    });
+
+    //deleto a propriedade passwordHash do obj
+    delete newUser._doc.passwordHash;
+
+    return res.status(201).json(newUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
 
 //CREATE - MONGODB
 userRoute.post("/create-user", async (req, res) => {
