@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+import isAdmin from "../middlewares/isAdmin.js";
+
 
 const userRoute = express.Router();
 
@@ -92,10 +94,20 @@ userRoute.post("/login", async (req, res) => {
 //profile
 userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
   try {
-
     //req.currentUser -> veio do middle attachCurrentUser
-
     return res.status(200).json(req.currentUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
+userRoute.get("/all-users", isAuth, isAdmin, attachCurrentUser, async (req, res) => {
+  try {
+    
+    const users = await UserModel.find({}, { passwordHash: 0 });
+
+    return res.status(200).json(users);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error.errors);
@@ -118,7 +130,7 @@ userRoute.post("/create-user", async (req, res) => {
 }); */
 
 //GET ALL USERS
-userRoute.get("/all-users", async (req, res) => {
+/* userRoute.get("/all-users", async (req, res) => {
   try {
     const users = await UserModel.find({}, { __v: 0, updatedAt: 0 })
       .sort({
@@ -131,7 +143,7 @@ userRoute.get("/all-users", async (req, res) => {
     console.log(error);
     return res.status(500).json(error.errors);
   }
-});
+}); */
 
 //GET ONE USER
 userRoute.get("/oneUser/:id", async (req, res) => {
