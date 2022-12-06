@@ -3,6 +3,8 @@ import TaskModel from "../model/task.model.js";
 import UserModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
+import isAuth from "../middlewares/isAuth.js";
+import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 
 const userRoute = express.Router();
 
@@ -88,16 +90,17 @@ userRoute.post("/login", async (req, res) => {
 });
 
 //profile
+userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
+  try {
 
+    //req.currentUser -> veio do middle attachCurrentUser
 
-
-
-
-
-
-
-
-
+    return res.status(200).json(req.currentUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
 
 /* //CREATE - MONGODB
 userRoute.post("/create-user", async (req, res) => {
@@ -113,9 +116,6 @@ userRoute.post("/create-user", async (req, res) => {
     return res.status(500).json(error.errors);
   }
 }); */
-
-
-
 
 //GET ALL USERS
 userRoute.get("/all-users", async (req, res) => {
