@@ -1,5 +1,5 @@
 import express from "express";
-import uploadImg from "../config/cloudnary.config";
+import uploadImg from "../config/cloudnary.config.js";
 
 const uploadRoute = express.Router();
 

@@ -33,6 +33,7 @@ const userSchema = new Schema(
     },
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
     passwordHash: { type: String, required: true },
+    profilePic: {type: String}
   },
   {
     timestamps: true,
