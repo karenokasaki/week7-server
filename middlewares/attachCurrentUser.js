@@ -12,6 +12,13 @@ async function attachCurrentUser(req, res, next) {
       return res.status(400).json({ msg: "Usuário não encontrado" });
     }
 
+    //checar se o usuário tem o email confirmado
+    if (user.confirmEmail === false) {
+      return res
+        .status(401)
+        .json({ msg: "Usuário não confirmado. Por favor validar email." });
+    }
+
     //eu posso criar CHAVES dentro dessa requisição
     req.currentUser = user;
 
