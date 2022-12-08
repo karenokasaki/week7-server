@@ -68,7 +68,7 @@ userRoute.post("/sign-up", async (req, res) => {
     };
 
     //envio do email
-    await transporter.sendMail(mailOptions);
+    //await transporter.sendMail(mailOptions);
 
     return res.status(201).json(newUser);
   } catch (error) {
@@ -154,7 +154,7 @@ userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    //await transporter.sendMail(mailOptions);
 
     return res.status(200).json(req.currentUser);
   } catch (error) {
@@ -179,6 +179,41 @@ userRoute.get(
     }
   }
 );
+
+userRoute.put("/edit", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    //quem é o usuário? -> req.currentUser
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.currentUser._id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
+userRoute.delete("/delete", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(req.currentUser._id);
+
+    if (!deletedUser) {
+      return res.status(400).json({ msg: "Usuário não encontrado!" });
+    }
+
+    //deletar TODAS as tarefas que o usuário é dono
+    await TaskModel.deleteMany({ user: req.currentUser._id });
+
+    return res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
 
 /* //CREATE - MONGODB
 userRoute.post("/create-user", async (req, res) => {
@@ -224,45 +259,6 @@ userRoute.get("/oneUser/:id", async (req, res) => {
     }
 
     return res.status(200).json(user);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error.errors);
-  }
-});
-
-userRoute.delete("/delete/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedUser = await UserModel.findByIdAndDelete(id);
-
-    if (!deletedUser) {
-      return res.status(400).json({ msg: "Usuário não encontrado!" });
-    }
-
-    const users = await UserModel.find();
-
-    //deletar TODAS as tarefas que o usuário é dono
-    await TaskModel.deleteMany({ user: id });
-
-    return res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error.errors);
-  }
-});
-
-userRoute.put("/edit/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      id,
-      { ...req.body },
-      { new: true, runValidators: true }
-    );
-
-    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error.errors);

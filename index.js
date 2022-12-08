@@ -6,6 +6,7 @@ import connect from "./config/db.config.js";
 import userRoute from "./routes/user.routes.js";
 import taskRoute from "./routes/task.routes.js";
 import uploadRoute from "./routes/uploadImage.routes.js";
+import logRoute from "./routes/log.routes.js";
 
 //habilitar o servidor a ter variáveis de ambiente
 dotenv.config();
@@ -24,6 +25,7 @@ connect();
 app.use("/user", userRoute);
 app.use("/task", taskRoute);
 app.use("/uploadImage", uploadRoute);
+app.use("/log", logRoute)
 
 // o servidor subindo pro ar.
 app.listen(process.env.PORT, () => {
