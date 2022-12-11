@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const taskSchema = new Schema(
+const serviceSchema = new Schema(
   {
     details: { type: String, required: true },
     complete: { type: Boolean, default: false },
@@ -9,13 +9,13 @@ const taskSchema = new Schema(
     collab: [{ type: Schema.Types.ObjectId, ref: "User" }],
     status: {
       type: String,
-      enum: ["aberto", "andamento", "finalizando"],
-      default: "aberto",
+      enum: ["Atendimento", "Andamento", "Pendente", "Finalizado", "Suspenso"],
+      default: "Atendimento",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const TaskModel = model("Task", taskSchema);
+const ServiceModel = model("Service", serviceSchema);
 
-export default TaskModel;
+export default ServiceModel;

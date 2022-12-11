@@ -8,7 +8,7 @@ const logRoute = express.Router();
 logRoute.get("/my-logs", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const logs = await LogModel.find({ user: req.currentUser._id }).populate(
-      "user"
+      "user",
     );
 
     return res.status(200).json(logs);

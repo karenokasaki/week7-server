@@ -1,11 +1,11 @@
-
 function isAdmin(req, res, next) {
+  if (req.auth.role !== "ADMIN") {
+    return res
+      .status(401)
+      .json({ msg: "Usuário não autorizado para esta rota!" });
+  }
 
-    if (req.auth.role !== "ADMIN") {
-        return res.status(401).json({msg: "Usuário não autorizado para esta rota!"})
-    }
-
-    next()
+  next();
 }
 
-export default isAdmin
+export default isAdmin;

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const logSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
-  task: { type: Schema.Types.ObjectId, ref: "Task" },
+  service: { type: Schema.Types.ObjectId, ref: "Service" },
   date: { type: Date, default: Date.now },
   status: { type: String },
 });

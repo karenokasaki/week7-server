@@ -1,5 +1,5 @@
 import express from "express";
-import TaskModel from "../model/task.model.js";
+import ServiceModel from "../model/service.model.js";
 import UserModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
@@ -32,7 +32,7 @@ userRoute.post("/sign-up", async (req, res) => {
     if (
       !password ||
       !password.match(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#!])[0-9a-zA-Z$*&@#!]{8,}$/
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#!])[0-9a-zA-Z$*&@#!]{8,}$/,
       )
     ) {
       return res
@@ -177,7 +177,7 @@ userRoute.get(
       console.log(error);
       return res.status(500).json(error.errors);
     }
-  }
+  },
 );
 
 userRoute.put("/edit", isAuth, attachCurrentUser, async (req, res) => {
@@ -187,7 +187,7 @@ userRoute.put("/edit", isAuth, attachCurrentUser, async (req, res) => {
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.currentUser._id,
       { ...req.body },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     return res.status(200).json(updatedUser);
@@ -206,7 +206,7 @@ userRoute.delete("/delete", isAuth, attachCurrentUser, async (req, res) => {
     }
 
     //deletar TODAS as tarefas que o usuário é dono
-    await TaskModel.deleteMany({ user: req.currentUser._id });
+    await ServiceModel.deleteMany({ user: req.currentUser._id });
 
     return res.status(200).json(users);
   } catch (error) {
@@ -219,10 +219,8 @@ userRoute.delete("/delete", isAuth, attachCurrentUser, async (req, res) => {
 userRoute.post("/create-user", async (req, res) => {
   try {
     const form = req.body;
-
     //quer criar um documento dentro da sua collection -> .create()
     const newUser = await UserModel.create(form);
-
     return res.status(201).json(newUser);
   } catch (error) {
     console.log(error);
@@ -238,7 +236,6 @@ userRoute.post("/create-user", async (req, res) => {
         age: 1,
       })
       .limit(100);
-
     return res.status(200).json();
   } catch (error) {
     console.log(error);
@@ -252,7 +249,7 @@ userRoute.get("/oneUser/:id", async (req, res) => {
     const { id } = req.params;
 
     // const user = await UserModel.find({_id: id})
-    const user = await UserModel.findById(id).populate("tasks");
+    const user = await UserModel.findById(id).populate("services");
 
     if (!user) {
       return res.status(400).json({ msg: " Usuário não encontrado!" });

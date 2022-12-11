@@ -10,7 +10,7 @@ function generateToken(user) {
   const signature = process.env.TOKEN_SIGN_SECRET;
 
   //expiration define por quanto tempo o token será válido
-  const expiration = "12h";
+  const expiration = "120h";
 
   //essa função vai retornar o token assinado.
   //argumentos da função sign()
